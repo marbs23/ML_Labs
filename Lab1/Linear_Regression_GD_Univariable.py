@@ -74,6 +74,7 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000,
         b = b - lr * grad_b
     return w, b, historial
 
+# STOCHASTIC GRADIENT DESCENT (SGD)
 def stochastic_gradient_descent(datos, lr=0.01, epocas=100):
     w, b = 0.0, 0.0
     historial = []
@@ -87,10 +88,6 @@ def stochastic_gradient_descent(datos, lr=0.01, epocas=100):
             w = w - lr * grad_w
             b = b - lr * grad_b
     return w, b, historial
-
-# ===========================================================================
-# COMPARACION FINAL
-# ===========================================================================
 
 def graficar(datos, w, b, label_x, label_y, case, mode):
     dirname = f"outputs/{case}"
