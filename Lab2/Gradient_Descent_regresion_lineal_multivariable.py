@@ -3,6 +3,7 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import math
 
 # DATA
 def cargar_csv(ruta):
@@ -96,7 +97,6 @@ def stochastic_gradient_descent(data, lr=0.01, epocas=100):
             b = b - lr * grad_b
     return w, b, historial
 
-import math
 
 def calcular_estadisticas(data):
     n = len(data)
