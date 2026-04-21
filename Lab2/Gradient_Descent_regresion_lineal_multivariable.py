@@ -101,7 +101,6 @@ def stochastic_gradient_descent(data, lr=0.01, epocas=100):
 def calcular_estadisticas(data):
     n = len(data)
     num_columnas = len(data[0])
-    # No normalizamos la última columna (Y), solo las X
     medias = []
     desviaciones = []
     
@@ -109,7 +108,6 @@ def calcular_estadisticas(data):
         columna = [row[j] for row in data]
         media = sum(columna) / n
         
-        # Desviación estándar: sqrt( sum(x - media)^2 / n )
         varianza = sum((x - media)**2 for x in columna) / n
         desviacion = math.sqrt(varianza)
         
@@ -124,15 +122,12 @@ def normalizar_z_score(data, medias, desviaciones):
     for row in data:
         nueva_fila = []
         for j in range(len(row) - 1):
-            # Aplicar z = (x - media) / desviacion
-            # Evitamos división por cero si la desviación es 0
             if desviaciones[j] > 0:
                 z = (row[j] - medias[j]) / desviaciones[j]
             else:
                 z = 0.0
             nueva_fila.append(z)
         
-        # Añadimos la Y (última columna) sin normalizar
         nueva_fila.append(row[-1])
         data_normalizada.append(nueva_fila)
         
