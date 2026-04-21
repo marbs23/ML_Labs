@@ -138,24 +138,20 @@ def normalizar_z_score(data, medias, desviaciones):
         
     return data_normalizada
 
-def graficar(data, w, b, label_x, label_y, case, mode):
+def graficar(hist, case, mode):
     dirname = f"outputs/{case}"
     if not os.path.exists(dirname):
         os.makedirs(dirname)
-    x_vals = [d[0] for d in data]
-    y_vals = [d[1] for d in data]
-    plt.figure(figsize=(10, 5))
-    plt.scatter(x_vals, y_vals, color='blue', label='Data')
-    x_line = np.array([min(x_vals), max(x_vals)])
-    y_line = w * x_line + b
-    plt.plot(x_line, y_line, color='red', linewidth=3, label=f'Modelo: y={w:.4f}x + {b:.4f}')
-    plt.title("Visualización del Modelo "+ mode)
-    plt.xlabel(label_x)
-    plt.ylabel(label_y)
+    mse_data = [d[3] for d in hist]
+    plt.figure(figsize=(10, 6))
+    plt.plot(mse_data, color='red', linewidth=1, label=f"MSE {mode} data")
+    plt.title("Convergence Graph "+ mode)
+    plt.xlabel("Iterations")
+    plt.ylabel("Error MSE")
     plt.legend()
     plt.grid(True)
-    plt.savefig(f"{dirname}/{label_x}_{mode}.png")
-    print(f"Save: {label_x} with {mode}.png")
+    plt.savefig(f"{dirname}/{case}_convergence_{mode}.png")
+    print(f"Save: Convergence graph with {mode}.png")
     plt.close()
 
 # MAIN
@@ -171,14 +167,14 @@ if __name__ == "__main__":
 
     # GD weights, bias and historial
     w_GD, b_GD, hist_GD = gradient_descent(data, lr=0.05, iteraciones=2000)
-    print("Pesos:")
+    print("Final weights with GD:")
     [print(f"{wi} ") for wi in w_GD]
     print(f"Bias: {b_GD}")
     # SGD weights, bias and historial
     w_SGD, b_SGD, hist_SGD = stochastic_gradient_descent(data, lr=0.0001, epocas=200)
-    print("Pesos:")
+    print("Final weights with SGD:")
     [print(f"{wi} ") for wi in w_SGD]
     print(f"Bias: {b_SGD}")
-
-    #graficar(data[i], w_GD, b_GD, headers[i], headers[-1], filename, "GD")
-    #graficar(data[i], w_SGD, b_SGD, headers[i], headers[-1], filename, "SGD")
+    # Graphs about convergence
+    graficar(hist_GD, filename, "GD")
+    graficar(hist_SGD, filename, "SGD")
