@@ -77,22 +77,18 @@ def graficar(data, W, label_x, label_y, case, mode):
     plt.close()
 
 def print_hist(hist):
-    for i in range(5):
+    for i in range(0,len(hist), 200):
         iteration, pesos, mse = hist[i]
-        print(f"Iter {iteration:04d} | MSE: {mse:.8f} | b: {pesos[0][0]:.4f} | w: {pesos[1][0]:.4f}")
-    
-    print("...")
-    
-    # Imprimimos las últimas 5 épocas
-    for i in range(-5, 0):
-        iteration, pesos, mse = hist[i]
-        print(f"Iter {iteration:04d} | MSE: {mse:.8f} | b: {pesos[0][0]:.4f} | w: {pesos[1][0]:.4f}")
+        print(f"Iter {iteration:4d} | MSE: {mse:.8f} | b: {pesos[0][0]:.4f} | w: {pesos[1][0]:.4f}")    
+    if len(hist) % 200 != 1:
+        iteration, pesos, mse = hist[-1]
+        print(f"Iter {iteration:4d} | MSE: {mse:.8f} | b: {pesos[0][0]:.4f} | w: {pesos[1][0]:.4f} (Final)")
     
 
 # MAIN
 if __name__ == "__main__":
     new_data = data_log(data)
-    w_GD, hist_GD, R2 = gradient_descent(new_data, lr=0.01, iteraciones=2000)
+    w_GD, hist_GD, R2 = gradient_descent(new_data, lr=0.05, iteraciones=2000)
     print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD[1][0]:.4f}, R2 = {R2}")
     print(f"-------")
     print_hist(hist_GD)
