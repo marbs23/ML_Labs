@@ -42,7 +42,7 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
     historial = []
     for i in range(iteraciones):
         mse = calcular_mse(X, y, W)
-        if (i > 0 and abs(mse-historial[-1][2])< 0.00001):
+        if (i > 0 and abs(mse-historial[-1][2])< 0.000001):
             historial.append((i, W.copy(), mse))
             break
         historial.append((i, W.copy(), mse))
