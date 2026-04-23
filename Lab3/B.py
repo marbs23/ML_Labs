@@ -77,7 +77,7 @@ def Zscore(data):
     result = np.hstack((X_normalized, y))
     return result.tolist()
 
-def graficar(hist, case):
+def graphicConvergence(hist, case):
     dirname = f"outputs/{case}"
     if not os.path.exists(dirname):
         os.makedirs(dirname)
@@ -92,6 +92,33 @@ def graficar(hist, case):
     plt.savefig(f"{dirname}/{case}_convergence.png")
     print(f"Save: Convergence graph with GD.png")
     plt.close()
+
+def graphicComparisson(W, data, case):
+    dirname = f"outputs/{case}"
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+    data_array = np.array(data, dtype=float)
+    X_init = data_array[:, :-1]
+    col_1 = np.ones((len(data), 1))
+    X = np.hstack((col_1, X_init))
+    y = data_array[:, -1:]
+    y_pred = predecir(X, W).flatten()
+    plt.figure(figsize=(8, 6))    
+    plt.scatter(y, y_pred, color='blue', alpha=0.6, label='Predicciones')
+    lims = [
+        np.min([y.min(), y_pred.min()]),
+        np.max([y.max(), y_pred.max()]),
+    ]
+    plt.plot(lims, lims, color='red', linestyle='--', label='Predicción Perfecta')
+    plt.title(f'Comparación: Real vs Predicho - {case}')
+    plt.xlabel('Precio Real (USD)')
+    plt.ylabel('Precio Predicho (USD)')
+    plt.legend()
+    plt.grid(True, linestyle=':', alpha=0.7)
+
+    filename = f"{dirname}/comparacion_real_vs_predicho.png"
+    plt.savefig(filename)
+    print(f"Gráfica guardada en: {filename}")
 
 def print_hist(hist):
     for i in range(0,len(hist), 10):
@@ -112,4 +139,5 @@ if __name__ == "__main__":
     print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print(f"-------")
     print_hist(hist_GD)
-    graficar(hist_GD, "B")
+    graphicConvergence(hist_GD, "B")
+    graphicComparisson(w_GD, normal_dataset, "B")
