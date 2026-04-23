@@ -52,6 +52,17 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
     R2 = 1 - SSr/SSm
     return W.copy(), historial, R2
 
+def normal_ecuation(data):
+    data_array = np.array(data)
+    X_init = data_array[:, :-1]
+    col_1 = np.ones((len(data), 1))
+    X = np.hstack((col_1, X_init))
+    y = data_array[:, -1:]
+    
+    # Aplicar la fórmula: (X^T * X)^-1 * X^T * y
+    W_analitico = np.linalg.inv(X.T @ X) @ (X.T @ y)    
+    return W_analitico
+
 def data_log(data):
     new_data = [[math.log(row[0]), row[1]] for row in data]
     return new_data
@@ -89,7 +100,9 @@ def print_hist(hist):
 if __name__ == "__main__":
     new_data = data_log(data)
     w_GD, hist_GD, R2 = gradient_descent(new_data, lr=0.05, iteraciones=2000)
+    w_normal = normal_ecuation(new_data)
     print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD[1][0]:.4f}, R2 = {R2}")
+    print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal[1][0]:.4f}")
     print(f"-------")
     print_hist(hist_GD)
     graficar(new_data, w_GD, "Distancia", "Nivel de Ruido", "A", "GD")
