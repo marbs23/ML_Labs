@@ -67,7 +67,7 @@ def data_log(data):
     new_data = [[math.log(row[0]), row[1]] for row in data]
     return new_data
 
-def graficar(data, W, label_x, label_y, case, mode):
+def graficar(data, W, W_normal,  label_x, label_y, case, mode):
     dirname = f"outputs/{case}"
     if not os.path.exists(dirname):
         os.makedirs(dirname)
@@ -76,8 +76,12 @@ def graficar(data, W, label_x, label_y, case, mode):
     plt.figure(figsize=(10, 5))
     plt.scatter(x_vals, y_vals, color='blue', label='Data')
     x_line = np.array([min(x_vals), max(x_vals)])
-    y_line = W[0][0] + W[1][0] * x_line
-    plt.plot(x_line, y_line, color='red', linewidth=3, label=f'Modelo: y={W[0][0]:.4f} + {W[1][0]:.4f}x')
+    y_line_gd = W[0][0] + W[1][0] * x_line
+    plt.plot(x_line, y_line_gd, color='red', linewidth=3, 
+             label=f'GD: y={W[1][0]:.2f}x + {W[0][0]:.2f}')
+    y_line_norm = W_normal[0][0] + W_normal[1][0] * x_line
+    plt.plot(x_line, y_line_norm, color='green', linestyle='--', linewidth=2,
+             label=f'Normal Ec.: y={W_normal[1][0]:.2f}x + {W_normal[0][0]:.2f}')
     plt.title(f'Visualización del Modelo {mode} {case}')
     plt.xlabel(label_x)
     plt.ylabel(label_y)
@@ -105,4 +109,4 @@ if __name__ == "__main__":
     print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal[1][0]:.4f}")
     print(f"-------")
     print_hist(hist_GD)
-    graficar(new_data, w_GD, "Distancia", "Nivel de Ruido", "A", "GD")
+    graficar(new_data, w_GD, w_normal, "Distancia", "Nivel de Ruido", "A", "GD")
