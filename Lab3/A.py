@@ -74,14 +74,20 @@ def graficar(data, W, W_normal,  label_x, label_y, case, mode):
     y_vals = [d[1] for d in data]
     plt.figure(figsize=(10, 5))
     plt.scatter(x_vals, y_vals, color='blue', label='Data')
-    x_line = np.array([min(x_vals), max(x_vals)])
-    y_line_gd = W[0][0] + W[1][0] * x_line
+
+    x_line = np.linspace(min(x_vals), max(x_vals), 300)
+    z_line = np.log(x_line)
+
+    y_line_gd = W[0][0] + W[1][0] * z_line
     plt.plot(x_line, y_line_gd, color='red', linewidth=3, 
              label=f'GD: y={W[1][0]:.2f}x + {W[0][0]:.2f}')
-    y_line_norm = W_normal[0][0] + W_normal[1][0] * x_line
+    
+    y_line_norm = W_normal[0][0] + W_normal[1][0] * z_line
     plt.plot(x_line, y_line_norm, color='green', linestyle='--', linewidth=2,
              label=f'Normal Ec.: y={W_normal[1][0]:.2f}x + {W_normal[0][0]:.2f}')
-    plt.title(f'Visualización del Modelo {mode} {case}')
+    
+    plt.xscale('log')
+    plt.title(f'Modelo Logarítmico {mode} — {case}')
     plt.xlabel(label_x)
     plt.ylabel(label_y)
     plt.legend()
@@ -104,8 +110,9 @@ if __name__ == "__main__":
     new_data = data_log(data)
     w_GD, hist_GD, R2 = gradient_descent(new_data, lr=0.05, iteraciones=2000)
     w_normal = normal_ecuation(new_data)
-    print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD[1][0]:.4f}, R2 = {R2}")
-    print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal[1][0]:.4f}")
-    print(f"-------")
+    print("Model:")
+    print(f"GD: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2={R2:.6f}")
+    print(f"Normal: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print_hist(hist_GD)
-    graficar(new_data, w_GD, w_normal, "Distancia", "Nivel de Ruido", "A", "GD")
+
+    graficar(data, w_GD, w_normal, "Distancia", "Nivel de Ruido", "A", "GD")
