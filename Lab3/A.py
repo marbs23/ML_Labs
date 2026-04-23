@@ -110,9 +110,16 @@ if __name__ == "__main__":
     new_data = data_log(data)
     w_GD, hist_GD, R2 = gradient_descent(new_data, lr=0.05, iteraciones=2000)
     w_normal = normal_ecuation(new_data)
+
     print("Model:")
     print(f"GD: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2={R2:.6f}")
     print(f"Normal: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print_hist(hist_GD)
+
+    d_cero_gd = math.exp(-w_GD[0][0] / w_GD[1][0])
+    d_cero_normal = math.exp(-w_normal[0][0] / w_normal[1][0])
+    print(f"Distancia donde L=0 dB (GD):            {d_cero_gd:.2f} m")
+    print(f"Distancia donde L=0 dB (Ec. Normal):    {d_cero_normal:.2f} m")
+
 
     graficar(data, w_GD, w_normal, "Distancia", "Nivel de Ruido", "A", "GD")
