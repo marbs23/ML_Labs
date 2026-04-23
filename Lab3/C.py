@@ -43,7 +43,7 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
     historial = []
     for i in range(iteraciones):
         mse = calcular_mse(X, y, W)
-        if (i > 0 and abs(mse-historial[-1][2])< 0.01):
+        if (i > 0 and abs(mse-historial[-1][2])< 0.0001):
             historial.append((i, W.copy(), mse))
             break
         historial.append((i, W.copy(), mse))
@@ -73,6 +73,14 @@ def Zscore(data):
     result = np.hstack((X_normalized, y))
     return result.tolist()
 
+def transform_data(data):
+    data_array = np.array(data, dtype=float)
+    X1 = data_array[:, :-1]
+    X2 = X1**2
+    y = data_array[:, -1:]
+    result = np.hstack((X1,X2,y))
+    return result.tolist()
+
 def print_hist(hist):
     for i in range(0,len(hist), 10):
         iteration, weights, mse = hist[i]
@@ -85,12 +93,27 @@ def print_hist(hist):
 
 # MAIN
 if __name__ == "__main__":
+    data_transform = transform_data(dataset)
     normal_dataset = Zscore(dataset)
-    w_GD, hist_GD, R2 = gradient_descent(normal_dataset, lr=0.1, iteraciones=2000)
+    data_norm_transform = Zscore(data_transform)
+
+    w_GD, hist_GD, R2 = gradient_descent(normal_dataset, lr=0.2, iteraciones=2000)
+    w_GDtrans, hist_GDtrans, R2trans = gradient_descent(data_norm_transform, lr=0.2, iteraciones=2000)
     w_normal = normal_equation(normal_dataset)
-    print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2 = {R2}")
-    print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
-    print(f"-------")
+    w_normal_trans = normal_equation(data_norm_transform)
+
+    print("Linear Model:")
+    print(f"GD: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2={R2:.6f}")
+    print(f"Normal: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print_hist(hist_GD)
+
+    print("\nModel new Features (Cuadratic)")
+    print(f"GD: b={w_GDtrans[0][0]:.4f}, w={w_GDtrans.flatten()[1:]}, R2={R2trans:.6f}")
+    print(f"Normal: b={w_normal_trans[0][0]:.4f}, w={w_normal_trans.flatten()[1:]}")
+    print_hist(hist_GDtrans)
+
+    print(f"\nR2 Comparisson:")
+    print(f"Linear: R2 = {R2:.6f}")
+    print(f"Cuadratic: R2 = {R2trans:.6f}")
     #graphicConvergence(hist_GD, "B")
     #graphicComparisson(w_GD, normal_dataset, "B")
