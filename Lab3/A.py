@@ -36,9 +36,10 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
     X_init = datos_array[:, :-1]
     col_1 = np.ones((len(datos), 1))
     X = np.hstack((col_1, X_init))
-
     y = datos_array[:, -1:]
     W = np.zeros((X.shape[1], 1))
+
+    SSm = np.sum((y - np.mean(y))**2)
     historial = []
     for i in range(iteraciones):
         mse = calcular_mse(X, y, W)
@@ -48,7 +49,9 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
         historial.append((i, W.copy(), mse))
         grad_W = gradiente_mse(X, y, W)
         W = W - lr * grad_W
-    return W.copy(), historial
+    SSr = mse * len(y)
+    R2 = 1 - SSr/SSm
+    return W.copy(), historial, R2
 
 def data_log(data):
     new_data = [[math.log(row[0]), row[1]] for row in data]
@@ -90,8 +93,8 @@ def print_hist(hist):
 # MAIN
 if __name__ == "__main__":
     new_data = data_log(data)
-    w_GD, hist_GD = gradient_descent(new_data, lr=0.01, iteraciones=2000)
-    print(f"Pesos finales: Intercepto (b)={w_GD[0][0]:.4f}, Pendiente (w)={w_GD[1][0]:.4f}")
+    w_GD, hist_GD, R2 = gradient_descent(new_data, lr=0.01, iteraciones=2000)
+    print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD[1][0]:.4f}, R2 = {R2}")
     print(f"-------")
     print_hist(hist_GD)
     graficar(new_data, w_GD, "Distancia", "Nivel de Ruido", "A", "GD")
