@@ -64,7 +64,6 @@ def normal_ecuation(data):
     X = np.hstack((col_1, X_init))
     y = data_array[:, -1:]
     
-    # Aplicar la fórmula: (X^T * X)^-1 * X^T * y
     W_analitico = np.linalg.inv(X.T @ X) @ (X.T @ y)    
     return W_analitico
 
@@ -108,9 +107,9 @@ def print_hist(hist):
 if __name__ == "__main__":
     normal_dataset = Zscore(dataset)
     w_GD, hist_GD, R2 = gradient_descent(normal_dataset, lr=0.1, iteraciones=2000)
-    #w_normal = normal_ecuation(dataset)
-    print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD.flatten()}, R2 = {R2}")
-    #print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal[1][0]:.4f}")
+    w_normal = normal_ecuation(normal_dataset)
+    print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2 = {R2}")
+    print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print(f"-------")
     print_hist(hist_GD)
     graficar(hist_GD, "B")
