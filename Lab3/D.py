@@ -75,9 +75,10 @@ def Zscore(data):
 
 def transform_data(data):
     data_array = np.array(data, dtype=float)
-    X1 = np.log(data_array[:, :1])
+    X1 = np.log(data_array[:, 0:1])
+    X2 = data_array[:, 1:-1]
     y = data_array[:, -1:]
-    result = np.hstack((X1,y))
+    result = np.hstack((X1, X2, y))
     return result.tolist()
 
 def print_hist(hist):
