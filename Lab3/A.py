@@ -59,7 +59,6 @@ def normal_ecuation(data):
     X = np.hstack((col_1, X_init))
     y = data_array[:, -1:]
     
-    # Aplicar la fórmula: (X^T * X)^-1 * X^T * y
     W_analitico = np.linalg.inv(X.T @ X) @ (X.T @ y)    
     return W_analitico
 
