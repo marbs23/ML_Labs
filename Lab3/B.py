@@ -57,7 +57,7 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
     R2 = 1 - SSr/SSm
     return W.copy(), historial, R2
 
-def normal_ecuation(data):
+def normal_equation(data):
     data_array = np.array(data)
     X_init = data_array[:, :-1]
     col_1 = np.ones((len(data), 1))
@@ -107,7 +107,7 @@ def print_hist(hist):
 if __name__ == "__main__":
     normal_dataset = Zscore(dataset)
     w_GD, hist_GD, R2 = gradient_descent(normal_dataset, lr=0.1, iteraciones=2000)
-    w_normal = normal_ecuation(normal_dataset)
+    w_normal = normal_equation(normal_dataset)
     print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2 = {R2}")
     print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print(f"-------")
