@@ -1,20 +1,18 @@
-import matplotlib.pyplot as plt
 import numpy as np
-import os
 
 dataset = [
-    [95, 4, 13, 171600],
-    [123, 2, 14, 216200],
-    [118, 2, 22, 196900],
-    [96, 4, 8, 190200],
-    [182, 4, 19, 305700],
-    [86, 4, 5, 180100],
-    [63, 2, 7, 133600],
-    [193, 2, 3, 320000],
-    [155, 2, 29, 242700],
-    [128, 2, 3, 216800],
-    [195, 5, 18, 357400],
-    [115, 5, 22, 219800]
+    [256.0, 15.2, 990.8],
+    [783.0, 27.4, 1015.5],
+    [490.0, 31.4, 1268.4],
+    [346.0, 33.0, 1226.4],
+    [519.0, 34.7, 1226.5],
+    [371.0, 24.9, 1283.1],
+    [718.0, 22.0, 1168.1],
+    [225.0, 32.3, 1063.9],
+    [265.0, 22.9, 1088.2],
+    [660.0, 27.9, 1207.8],
+    [231.0, 15.4, 904.1],
+    [665.0, 31.2, 1212.8]
 ]
 
 def predecir(X, W):
@@ -75,49 +73,6 @@ def Zscore(data):
     result = np.hstack((X_normalized, y))
     return result.tolist()
 
-def graphicConvergence(hist, case):
-    dirname = f"outputs/{case}"
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
-    mse_data = [d[2] for d in hist]
-    plt.figure(figsize=(10, 6))
-    plt.plot(mse_data, color='red', linewidth=1, label=f"MSE data")
-    plt.title("Convergence Graph")
-    plt.xlabel("Iterations")
-    plt.ylabel("Error MSE")
-    plt.legend()
-    plt.grid(True)
-    plt.savefig(f"{dirname}/{case}_convergence.png")
-    print(f"Save: Convergence graph with GD.png")
-    plt.close()
-
-def graphicComparisson(W, data, case):
-    dirname = f"outputs/{case}"
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
-    data_array = np.array(data, dtype=float)
-    X_init = data_array[:, :-1]
-    col_1 = np.ones((len(data), 1))
-    X = np.hstack((col_1, X_init))
-    y = data_array[:, -1:]
-    y_pred = predecir(X, W).flatten()
-    plt.figure(figsize=(8, 6))    
-    plt.scatter(y, y_pred, color='blue', alpha=0.6, label='Predicciones')
-    lims = [
-        np.min([y.min(), y_pred.min()]),
-        np.max([y.max(), y_pred.max()]),
-    ]
-    plt.plot(lims, lims, color='red', linestyle='--', label='Predicción Perfecta')
-    plt.title(f'Comparación: Real vs Predicho - {case}')
-    plt.xlabel('Precio Real (USD)')
-    plt.ylabel('Precio Predicho (USD)')
-    plt.legend()
-    plt.grid(True, linestyle=':', alpha=0.7)
-
-    filename = f"{dirname}/comparacion_real_vs_predicho.png"
-    plt.savefig(filename)
-    print(f"Gráfica guardada en: {filename}")
-
 def print_hist(hist):
     for i in range(0,len(hist), 10):
         iteration, weights, mse = hist[i]
@@ -137,5 +92,5 @@ if __name__ == "__main__":
     print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print(f"-------")
     print_hist(hist_GD)
-    graphicConvergence(hist_GD, "B")
-    graphicComparisson(w_GD, normal_dataset, "B")
+    #graphicConvergence(hist_GD, "B")
+    #graphicComparisson(w_GD, normal_dataset, "B")
