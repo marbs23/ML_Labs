@@ -91,32 +91,40 @@ def graphicConvergence(hist, case):
     print(f"Save: Convergence graph with GD.png")
     plt.close()
 
-def graphicComparisson(W, data, case):
+def graphicComparisson(w_GD, w_normal, normal_dataset, dataset, case):
     dirname = f"outputs/{case}"
     if not os.path.exists(dirname):
         os.makedirs(dirname)
-    data_array = np.array(data, dtype=float)
-    X_init = data_array[:, :-1]
-    col_1 = np.ones((len(data), 1))
-    X = np.hstack((col_1, X_init))
-    y = data_array[:, -1:]
-    y_pred = predecir(X, W).flatten()
+    # Predicciones GD (datos normalizados)
+    data_norm = np.array(normal_dataset, dtype=float)
+    X_norm = np.hstack((np.ones((len(normal_dataset), 1)), data_norm[:, :-1]))
+    y_real = data_norm[:, -1]
+    y_pred_GD = predecir(X_norm, w_GD).flatten()
+
+    # Predicciones Normal Equation (datos originales)
+    data_orig = np.array(dataset, dtype=float)
+    X_orig = np.hstack((np.ones((len(dataset), 1)), data_orig[:, :-1]))
+    y_real_orig = data_orig[:, -1]
+    y_pred_normal = predecir(X_orig, w_normal).flatten()
+
     plt.figure(figsize=(8, 6))    
-    plt.scatter(y, y_pred, color='blue', alpha=0.6, label='Predicciones')
-    lims = [
-        np.min([y.min(), y_pred.min()]),
-        np.max([y.max(), y_pred.max()]),
-    ]
+    plt.scatter(y_real, y_pred_GD, color='blue', alpha=0.7, label='Predicciones')
+    plt.scatter(y_real_orig, y_pred_normal, color='green', alpha=0.7, marker='^', label='Ec. Normal',)
+
+    all_vals = np.concatenate([y_real, y_pred_GD, y_pred_normal])
+    lims = [all_vals.min() * 0.97, all_vals.max() * 1.03]
     plt.plot(lims, lims, color='red', linestyle='--', label='Predicción Perfecta')
+
     plt.title(f'Comparación: Real vs Predicho - {case}')
     plt.xlabel('Precio Real (USD)')
     plt.ylabel('Precio Predicho (USD)')
     plt.legend()
     plt.grid(True, linestyle=':', alpha=0.7)
 
-    filename = f"{dirname}/comparacion_real_vs_predicho.png"
+    filename = f"{dirname}/Comparisson_Real_Pred.png"
     plt.savefig(filename)
     print(f"Gráfica guardada en: {filename}")
+    plt.close()
 
 def print_hist(hist):
     for i in range(0,len(hist), 10):
@@ -132,10 +140,10 @@ def print_hist(hist):
 if __name__ == "__main__":
     normal_dataset = Zscore(dataset)
     w_GD, hist_GD, R2 = gradient_descent(normal_dataset, lr=0.1, iteraciones=2000)
-    w_normal = normal_equation(normal_dataset)
-    print(f"Final Weights and R2: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2 = {R2}")
-    print(f"Normal Ecuation: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
-    print(f"-------")
+    w_normal = normal_equation(dataset)
+    print("Linear Model:")
+    print(f"GD: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2={R2:.6f}")
+    print(f"Normal: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print_hist(hist_GD)
     graphicConvergence(hist_GD, "B")
-    graphicComparisson(w_GD, normal_dataset, "B")
+    graphicComparisson(w_GD, w_normal, normal_dataset, dataset, "B")
