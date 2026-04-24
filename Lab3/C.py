@@ -43,7 +43,7 @@ def gradient_descent(datos, lr=0.01, iteraciones=1000):
     historial = []
     for i in range(iteraciones):
         mse = calcular_mse(X, y, W)
-        if (i > 0 and abs(mse-historial[-1][2])< 0.0001):
+        if (i > 0 and abs(mse - historial[-1][2]) < 0.01):
             historial.append((i, W.copy(), mse))
             break
         historial.append((i, W.copy(), mse))
@@ -82,7 +82,7 @@ def transform_data(data):
     return result.tolist()
 
 def print_hist(hist):
-    for i in range(0,len(hist), 10):
+    for i in range(0,len(hist), 100):
         iteration, weights, mse = hist[i]
         weights_format = np.round(weights.flatten(), 4).tolist()
         print(f"Iter {iteration:4d} | MSE: {mse:.8f} | W: {weights_format}")    
@@ -101,6 +101,7 @@ if __name__ == "__main__":
     w_GDtrans, hist_GDtrans, R2trans = gradient_descent(data_norm_transform, lr=0.2, iteraciones=2000)
     w_normal = normal_equation(normal_dataset)
     w_normal_trans = normal_equation(data_norm_transform)
+    w_normal_trans_real = normal_equation(data_transform)
 
     print("Linear Model:")
     print(f"GD: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2={R2:.6f}")
@@ -115,5 +116,9 @@ if __name__ == "__main__":
     print(f"\nR2 Comparisson:")
     print(f"Linear: R2 = {R2:.6f}")
     print(f"Cuadratic: R2 = {R2trans:.6f}")
-    #graphicConvergence(hist_GD, "B")
-    #graphicComparisson(w_GD, normal_dataset, "B")
+
+    w_aux = w_normal_trans_real.flatten()
+    agua_opt = -w_aux[1] / (2 * w_aux[3])
+    temp_opt  = -w_aux[2] / (2 * w_aux[4])
+    print(f"Agua óptima: {agua_opt:.2f} L/ha/día")
+    print(f"Temp óptima: {temp_opt:.2f} °C")
