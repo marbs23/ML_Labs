@@ -103,5 +103,3 @@ if __name__ == "__main__":
     print(f"GD: b={w_GD[0][0]:.4f}, w={w_GD.flatten()[1:]}, R2={R2:.6f}")
     print(f"Normal: b={w_normal[0][0]:.4f}, w={w_normal.flatten()[1:]}")
     print_hist(hist_GD)
-    #graphicConvergence(hist_GD, "B")
-    #graphicComparisson(w_GD, normal_dataset, "B")
