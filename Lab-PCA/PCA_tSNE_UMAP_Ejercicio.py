@@ -21,17 +21,17 @@ y = df['clase'].values
 X_sc = StandardScaler().fit_transform(X)
 
 # ── 2. PCA a 2D ───────────────────────────────────────────────────
-# TODO: aplicar PCA con n_components=2
-# Z_pca = ...
-# var_ret = ...  # varianza retenida en %
+pca = PCA(n_components=2)
+Z_pca = pca.fit_transform(X_sc)
+var_ret = pca.explained_variance_ratio_.sum() * 100  # varianza retenida en %
 
 # ── 3. t-SNE a 2D ─────────────────────────────────────────────────
-# TODO: aplicar t-SNE con perplexity=30, max_iter=1000, init='pca'
-# Z_tsne = ...
+tsne = TSNE(n_components=2, perplexity=30, max_iter=1000, init='pca', random_state=42)
+Z_tsne = tsne.fit_transform(X_sc)
 
 # ── 4. UMAP a 2D ──────────────────────────────────────────────────
-# TODO: aplicar UMAP con n_neighbors=15, min_dist=0.1
-# Z_umap = ...
+reducer = umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, random_state=42)
+Z_umap = reducer.fit_transform(X_sc)
 
 # ── 5. Visualización: 3 métodos lado a lado ───────────────────────
 fig, axes = plt.subplots(1, 3, figsize=(18, 5),
